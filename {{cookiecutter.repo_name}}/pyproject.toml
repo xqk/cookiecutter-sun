@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools >= 35.0.2", "wheel >= 0.29.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+known_third_party = ["fastapi", "pydantic", "starlette", "SQLAlchemy", "uvicorn", "loguru", "sun"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v -s -p no:warnings"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+omit = ["tests/*", "alembic/*", "clients/*"]
+
+[tool.coverage.report]
+omit = [".tox/*"]
+exclude_lines = ["raise NotImplementedError", "pass", "raise"]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py37
+
+[testenv]
+deps = -rrequirements_dev.txt
+commands =
+    coverage run -m pytest
+    coverage report
+setenv =
+    PYTHONPATH = {toxinidir}/clients/intermediates:{toxinidir}/services/rpc
+"""
